@@ -1,8 +1,13 @@
 <template>
   <div class="page p-8">
     <modal-dialog :show="showModal" @closeModal="showModal = false">
-      <p class="mb-4">Gokuu is ...</p>
-      <img class="w-full" src="https://i.gifer.com/QjMQ.gif" alt="" />
+      <template #content>
+        <p class="mb-4">Gokuu is ...</p>
+        <img class="w-full" src="https://i.gifer.com/QjMQ.gif" alt="" />
+      </template>
+      <template #caption="dummiesData">
+        <p>{{ dummiesData.caption }}</p>
+      </template>
     </modal-dialog>
     <button
       class="
@@ -23,30 +28,16 @@
         focus:outline-none focus:ring-1 focus:ring-indigo-500
         sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm
       "
-      @click="toggleModal"
+      @click="showModal = true"
     >
       Open Modal
     </button>
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue'
 import ModalDialog from './components/ModalDialog.vue'
 
-export default {
-  name: 'App',
-  components: {
-    ModalDialog,
-  },
-  setup() {
-    const showModal = ref(false)
-
-    function toggleModal() {
-      showModal.value = !showModal.value
-    }
-
-    return { showModal, toggleModal }
-  },
-}
+const showModal = ref(false)
 </script>

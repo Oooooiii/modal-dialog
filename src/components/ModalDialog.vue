@@ -42,9 +42,10 @@
               aria-labelledby="modal-headline"
             >
               <button class="absolute top-4 right-4">
-                <i-mdi-close @click="closeModal" />
+                <i-mdi-close @click="$emit('closeModal')" />
               </button>
-              <slot>I'm empty inside</slot>
+              <slot name="content">Empty Content</slot>
+              <slot name="caption" :caption="dummiesData">Empty Caption</slot>
             </div>
           </transition>
         </div>
@@ -53,44 +54,36 @@
   </teleport>
 </template>
 
-<script>
+<script setup>
 import { ref, watch } from 'vue'
 import useClickOutside from '../composables/useClickOutside'
 
-const props = {
+const showModal = ref(false)
+const modal = ref(null)
+const { onClickOutside } = useClickOutside()
+
+const dummiesData = `Son Goku, born Kakarot, is a male Saiyan and the main protagonist of the
+                  Dragon Ball metaseries created by Akira Toriyama. Fandom`
+
+const props = defineProps({
   show: {
     type: Boolean,
     default: false,
   },
-}
-export default {
-  name: 'ModalDialog',
-  props,
-  emits: ['closeModal'],
+})
 
-  setup(props, context) {
-    const showModal = ref(false)
-    const modal = ref(null)
-    const { onClickOutside } = useClickOutside()
+const emit = defineEmits(['closeModal'])
 
-    onClickOutside(modal, () => closeModal())
+watch(
+  () => props.show,
+  (show) => {
+    showModal.value = show
+  }
+)
 
-    watch(
-      () => props.show,
-      (show) => {
-        showModal.value = show
-      }
-    )
+onClickOutside(modal, () => closeModal())
 
-    function closeModal() {
-      context.emit('closeModal')
-    }
-
-    return {
-      closeModal,
-      showModal,
-      modal,
-    }
-  },
+function closeModal() {
+  emit('closeModal')
 }
 </script>
